@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "schola-backend"
+version = "0.1.0"
+description = ""
+authors = ["greatnessmensah <ephraimmensah99@gmail.com>"]
+readme = "README.md"
+packages = [{include = "schola_backend"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = {extras = ["standard"], version = "^0.103.2"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
