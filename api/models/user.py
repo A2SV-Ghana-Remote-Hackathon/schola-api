@@ -31,7 +31,7 @@ class Post(Base):
     __tablename__ = "posts"
     id = Column(Integer, primary_key=True, nullable=False)
     content = Column(String, nullable=False)
-    profile_image = Column(String)
+    post_image = Column(String)
     created_at = Column(
         TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
     )
