@@ -17,6 +17,8 @@ python-multipart = "^0.0.6"
 boto3 = "^1.28.57"
 uvicorn = "^0.23.2"
 pydantic-settings = "^2.0.3"
+psycopg2 = "^2.9.9"
+email-validator = "^2.0.0.post2"
 
 
 [build-system]
