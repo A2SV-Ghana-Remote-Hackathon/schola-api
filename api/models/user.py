@@ -52,6 +52,21 @@ class Event(Base):
     comments = relationship("Comment", back_populates="event", cascade="all, delete-orphan")
 
 
+class Announcement(Base):
+    __tablename__ = 'announcements'
+    id = Column(Integer, primary_key=True, nullable=False)
+    title = Column(String, nullable=False)
+    content = Column(String, nullable=False)
+    image_url = Column(String)
+    created_at = Column(
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
+    updated_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False, server_default=text('now()'))
+    user_id = Column(
+        Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    user = relationship("User")
+
+
 class Comment(Base):
     __tablename__ = "comments"
     id = Column(Integer, primary_key=True, nullable=False)
