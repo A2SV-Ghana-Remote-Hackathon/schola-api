@@ -46,8 +46,14 @@ class CreateComment(BaseModel):
 class CommentResponse(BaseModel):
     id: int
     content: str
-    created_at: str
-    owner: Profile
+    created_at: datetime
+    event_id: Optional[int]
+    post_id: Optional[int]
+    user: Profile
+    reply_to_comment_id: Optional[int]
+
+    class Config:
+        from_attributes = True
     
 
 class CreatePost(BaseModel):

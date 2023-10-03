@@ -42,8 +42,8 @@ def create_user_post_comment(comment: CreateComment, post_id: int, current_user:
     return new_comment
 
 @post_router.get("/{post_id}/comments", response_model=list[CommentResponse], status_code=status.HTTP_200_OK)
-def get_user_post_comments(user_id: int, post_id: int, db: Session = Depends(get_db)):
-    post = db.query(Post).filter(Post.id == post_id, Post.owner_id == user_id).first()
+def get_user_post_comments(post_id: int, db: Session = Depends(get_db)):
+    post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
 
