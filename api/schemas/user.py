@@ -81,6 +81,24 @@ class EventResponse(CreateEvent):
         from_attributes = True
 
 
+class CreateAnnouncement(BaseModel):
+    content: str
+
+    class Config:
+        from_attributes = True
+
+
+class AnnouncementResponse(BaseModel):
+    id: int
+    content: str
+    created_at: datetime
+    updated_at: datetime
+    owner: Profile
+
+    class Config:
+        from_attributes = True
+
+
 class Vote(BaseModel):
     post_id: int
     dir: conint(le=1)

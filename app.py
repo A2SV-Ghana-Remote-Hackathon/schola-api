@@ -5,6 +5,7 @@ from api.routes.user import user_router
 from api.routes.auth import auth_router
 from api.routes.post import post_router
 from api.routes.event import event_router
+from api.routes.announcements import announcement_router
 
 app = FastAPI()
 
@@ -23,6 +24,7 @@ app.include_router(user_router)
 app.include_router(auth_router)
 app.include_router(post_router)
 app.include_router(event_router)
+app.include_router(announcement_router)
 
 @app.get("/")
 def root():
