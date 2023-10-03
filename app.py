@@ -4,6 +4,7 @@ from database.db import Base, engine
 from api.routes.user import user_router
 from api.routes.auth import auth_router
 from api.routes.post import post_router
+from api.routes.event import event_router
 
 app = FastAPI()
 
@@ -21,6 +22,7 @@ Base.metadata.create_all(bind=engine)
 app.include_router(user_router)
 app.include_router(auth_router)
 app.include_router(post_router)
+app.include_router(event_router)
 
 @app.get("/")
 def root():

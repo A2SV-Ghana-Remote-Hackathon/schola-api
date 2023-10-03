@@ -56,19 +56,15 @@ class Comment(Base):
     __tablename__ = "comments"
     id = Column(Integer, primary_key=True, nullable=False)
     content = Column(String, nullable=False)
-    created_at = Column(
-        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
-    )
-    comment_type = Column(String)  # 'post' or 'event'
-    comment_id = Column(Integer)
-    post_id = Column(Integer, ForeignKey("posts.id", ondelete="CASCADE"))
-    post = relationship("Post", back_populates="comments", foreign_keys=[comment_id], primaryjoin="and_(Comment.comment_type == 'post', Comment.comment_id == Post.id)")
+    created_at = Column(TIMESTAMP(timezone=True), nullable=False)
     event_id = Column(Integer, ForeignKey("events.id", ondelete="CASCADE"))
-    event = relationship("Event", back_populates="comments", foreign_keys=[comment_id], primaryjoin="and_(Comment.comment_type == 'event', Comment.comment_id == Event.id)")
+    event = relationship("Event", back_populates="comments", foreign_keys=[event_id])
+    post_id = Column(Integer, ForeignKey("posts.id", ondelete="CASCADE"))
+    post = relationship("Post", back_populates="comments", foreign_keys=[post_id])
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     user = relationship("User", back_populates="comments")
     reply_to_comment_id = Column(Integer, ForeignKey("comments.id"))
-    replies = relationship("Comment", backref=backref("parent_comment", remote_side=[id]))
+    replies = relationship("Comment", backref="parent_comment", remote_side=[id])
 
 
 class Like(Base):

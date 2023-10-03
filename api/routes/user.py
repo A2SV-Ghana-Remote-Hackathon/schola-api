@@ -11,6 +11,10 @@ user_router = APIRouter(prefix="/users", tags=["User"])
 
 @user_router.post("/", status_code=status.HTTP_201_CREATED, response_model=Profile)
 def create_user(user: SignUp, db: Session = Depends(get_db)):
+    user_data = db.query(User).filter(User.email == user.email).first()
+    if user_data:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="user already exists")
     hashed_password = hash_password(user.password)
     user.password = hashed_password
     new_user = User(**user.dict())

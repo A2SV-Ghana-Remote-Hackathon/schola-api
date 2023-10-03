@@ -61,7 +61,22 @@ class PostResponse(BaseModel):
         orm_mode = True
 
     
+class CreateEvent(BaseModel):
+    title: str
+    description: str
+    event_date: str
+    image: Optional[str]
+    location: str
 
+    class Config:
+        orm_mode = True
+
+
+class EventResponse(CreateEvent):
+    id: int
+
+    class Config:
+        orm_mode = True
 
 
 class Vote(BaseModel):
@@ -70,6 +85,7 @@ class Vote(BaseModel):
 
     class Config:
         orm_mode = True
+        
 
 class Token(BaseModel):
     access_token: str
