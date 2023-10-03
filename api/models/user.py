@@ -39,6 +39,27 @@ class Post(Base):
         Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     owner = relationship("User", back_populates="posts")
     comments = relationship("Comment", back_populates="post")
+    community_id = Column(Integer, ForeignKey("communities.id"))
+    community = relationship("Community", back_populates="posts")
+
+
+class Community(Base):
+    __tablename__ = "communities"
+    id = Column(Integer, primary_key=True, nullable=False)
+    name = Column(String, nullable=False, unique=True)
+    description = Column(Text)
+    posts = relationship("Post", back_populates="community")
+    members = relationship("User", secondary="community_membership")
+
+
+class CommunityMembership(Base):
+    __tablename__ = "community_membership"
+    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
+    community_id = Column(Integer, ForeignKey("communities.id"), primary_key=True)
+
+    user = relationship("User", backref=backref("community_memberships"))
+    community = relationship("Community", backref=backref("memberships"))
+    posts = relationship("Post", back_populates="community")
 
 
 class Event(Base):

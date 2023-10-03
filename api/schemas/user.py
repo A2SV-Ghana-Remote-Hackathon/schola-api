@@ -35,13 +35,6 @@ class Login(BaseModel):
     class Config:
         from_attributes = True
 
-class CreatePost(BaseModel):
-    content: str
-    type: Optional[str]
-    post_image: str
-
-    class Config:
-        from_attributes = True
 
 class Comment(BaseModel):
     id: int
@@ -94,6 +87,41 @@ class AnnouncementResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     owner: Profile
+
+    class Config:
+        from_attributes = True
+
+
+class CreatePost(BaseModel):
+    content: str
+    post_image: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+class PostResponse(BaseModel):
+    id: int
+    content: str
+    post_image: str
+
+    class Config:
+        orm_mode = True
+
+
+class CreateCommunity(BaseModel):
+    name: str
+    description: str
+
+    class Config:
+        from_attributes = True
+
+
+class CommunityResponse(BaseModel):
+    id: int
+    name: str
+    description: str
+    posts: List[PostResponse]
 
     class Config:
         from_attributes = True
