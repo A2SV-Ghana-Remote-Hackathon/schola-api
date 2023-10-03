@@ -16,6 +16,7 @@ sqlalchemy = "^2.0.21"
 python-multipart = "^0.0.6"
 boto3 = "^1.28.57"
 uvicorn = "^0.23.2"
+pydantic-settings = "^2.0.3"
 
 
 [build-system]
