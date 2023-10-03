@@ -46,9 +46,9 @@ class Event(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     title = Column(String, nullable=False)
     description = Column(Text)
-    event_date = Column(TIMESTAMP(timezone=True), nullable=False)
+    event_date = Column(String)
     location = Column(String)
-    image = Column(String)  # Event image URL or file path
+    image = Column(String)
     comments = relationship("Comment", back_populates="event", cascade="all, delete-orphan")
 
 
