@@ -25,6 +25,25 @@ class User(Base):
     )
     posts = relationship("Post", back_populates="owner")
     comments = relationship("Comment", back_populates="user")
+    owned_communities = relationship("Community", back_populates="owner")
+    joined_communities = relationship("Community", secondary="community_membership", back_populates="members")
+
+
+class Community(Base):
+    __tablename__ = "communities"
+    id = Column(Integer, primary_key=True, nullable=False)
+    name = Column(String, nullable=False, unique=True)
+    description = Column(Text)
+    owner_id = Column(Integer, ForeignKey("users.id"))
+    owner = relationship("User", back_populates="owned_communities")
+    posts = relationship("Post", back_populates="community")    
+    members = relationship("User", secondary="community_membership", back_populates="joined_communities")
+
+
+class CommunityMembership(Base):
+    __tablename__ = "community_membership"
+    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
+    community_id = Column(Integer, ForeignKey("communities.id"), primary_key=True)
 
 
 class Post(Base):
@@ -41,25 +60,6 @@ class Post(Base):
     comments = relationship("Comment", back_populates="post")
     community_id = Column(Integer, ForeignKey("communities.id"))
     community = relationship("Community", back_populates="posts")
-
-
-class Community(Base):
-    __tablename__ = "communities"
-    id = Column(Integer, primary_key=True, nullable=False)
-    name = Column(String, nullable=False, unique=True)
-    description = Column(Text)
-    posts = relationship("Post", back_populates="community")
-    members = relationship("User", secondary="community_membership")
-
-
-class CommunityMembership(Base):
-    __tablename__ = "community_membership"
-    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
-    community_id = Column(Integer, ForeignKey("communities.id"), primary_key=True)
-
-    user = relationship("User", backref=backref("community_memberships"))
-    community = relationship("Community", backref=backref("memberships"))
-    posts = relationship("Post", back_populates="community")
 
 
 class Event(Base):

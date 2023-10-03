@@ -42,6 +42,7 @@ class Comment(BaseModel):
     created_at: str
     owner: Profile
     profile_image: str
+    
 
 class PostResponse(BaseModel):
     id: int
@@ -106,7 +107,7 @@ class PostResponse(BaseModel):
     post_image: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CreateCommunity(BaseModel):
@@ -122,6 +123,7 @@ class CommunityResponse(BaseModel):
     name: str
     description: str
     posts: List[PostResponse]
+    owner: Profile
 
     class Config:
         from_attributes = True
