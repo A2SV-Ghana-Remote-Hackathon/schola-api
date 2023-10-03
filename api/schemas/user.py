@@ -35,23 +35,37 @@ class Login(BaseModel):
     class Config:
         from_attributes = True
 
+    
+class CreateComment(BaseModel):
+    content: str
 
-class Comment(BaseModel):
+    class Config:
+        from_attributes = True
+
+
+class CommentResponse(BaseModel):
     id: int
     content: str
     created_at: str
     owner: Profile
-    profile_image: str
     
+
+class CreatePost(BaseModel):
+    content: str
+    post_image: Optional[str] = Field(None)
+    community_id: Optional[int]
+
+    class Config:
+        from_attributes = True
+
 
 class PostResponse(BaseModel):
     id: int
     content: str
-    type: Optional[str]
-    profile_image: Optional[str]
-    created_at: datetime
+    post_image: Optional[str] = Field(None)
+    created_at: str
     owner: Profile
-    comments: List[Comment]
+    comments: List[CommentResponse]
 
     class Config:
         from_attributes = True
@@ -61,7 +75,7 @@ class CreateEvent(BaseModel):
     title: str
     description: str
     event_date: str
-    image: Optional[str]
+    image: Optional[str] = Field(None)
     location: str
 
     class Config:
@@ -95,7 +109,7 @@ class AnnouncementResponse(BaseModel):
 
 class CreatePost(BaseModel):
     content: str
-    post_image: Optional[str]
+    post_image: Optional[str] = Field(None)
 
     class Config:
         from_attributes = True
@@ -104,7 +118,7 @@ class CreatePost(BaseModel):
 class PostResponse(BaseModel):
     id: int
     content: str
-    post_image: str
+    post_image: Optional[str] = Field(None)
 
     class Config:
         from_attributes = True
