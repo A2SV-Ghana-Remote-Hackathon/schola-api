@@ -1,3 +1,4 @@
+from fastapi import Form
 from pydantic import BaseModel, EmailStr, Field, conint
 from typing import List, Optional
 from datetime import datetime
@@ -68,7 +69,7 @@ class PostResponse(BaseModel):
     id: int
     content: str
     post_image: Optional[str] = Field(None)
-    created_at: str
+    created_at: datetime
     owner: Profile
     comments: List[CommentResponse]
 
@@ -107,23 +108,6 @@ class AnnouncementResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     owner: Profile
-
-    class Config:
-        from_attributes = True
-
-
-class CreatePost(BaseModel):
-    content: str
-    post_image: Optional[str] = Field(None)
-
-    class Config:
-        from_attributes = True
-
-
-class PostResponse(BaseModel):
-    id: int
-    content: str
-    post_image: Optional[str] = Field(None)
 
     class Config:
         from_attributes = True

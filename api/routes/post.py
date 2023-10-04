@@ -1,20 +1,28 @@
 from datetime import datetime
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, Form, HTTPException, Response, UploadFile, status, File
 from sqlalchemy.orm import Session
 from api.models.user import Post, User, Comment
 from api.schemas.user import CreatePost, PostResponse, CreateComment, CommentResponse
 from database.db import get_db
 from utils.oauth2 import get_current_user
+from utils.s3 import upload_file_to_s3
+
 
 post_router = APIRouter(prefix="/posts", tags=["Post"])
 
 @post_router.post("/", response_model=PostResponse, status_code=status.HTTP_201_CREATED)
-def create_user_post(post: CreatePost, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    new_post = Post(content=post.content, post_image=post.post_image, created_at=datetime.now(), owner=current_user)
+def create_post(content: str = Form(...), file: UploadFile = File(None), db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if file:
+        image_url = upload_file_to_s3(file)
+    else:
+        image_url = None
+
+    new_post = Post(content=content, post_image=image_url, created_at=datetime.now(), owner=current_user)
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
+
     return new_post
 
 @post_router.get("/{post_id}/", response_model=PostResponse)
