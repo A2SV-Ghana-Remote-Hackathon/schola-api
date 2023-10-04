@@ -17,7 +17,7 @@ def create_event(
     description: str = Form(...),
     event_date: str = Form(...),
     location: str = Form(...),
-    image: UploadFile = File(None),
+    image: Optional[UploadFile] = File(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
