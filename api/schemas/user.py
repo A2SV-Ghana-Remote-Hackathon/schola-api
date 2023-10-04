@@ -8,7 +8,7 @@ class Profile(BaseModel):
     name: str = Field(...)
     email: EmailStr = Field(...)
     bio: str = Field(...)
-    profile_image: Optional[str] = Field(None)
+    profile_image: Optional[str]
     username: str = Field(...)
     role: str = Field(...)
 
@@ -20,7 +20,6 @@ class SignUp(BaseModel):
     name: str = Field(..., min_length=4)
     email: EmailStr = Field(...)
     bio: str = Field(...)
-    profile_image: Optional[str] = Field(None)
     username: str = Field(...,min_length=4)
     password: str = Field(...,min_length=8) 
 

@@ -16,7 +16,7 @@ class User(Base):
     name = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
     bio = Column(Text)
-    profile_image = Column(String)
+    profile_image = Column(String, default="https://scholabucket.s3.eu-west-3.amazonaws.com/profile+(1).jpg")
     username = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
     role = Column(String, default=UserRole.USER.value)
