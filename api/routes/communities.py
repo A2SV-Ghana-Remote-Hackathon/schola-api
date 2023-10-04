@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from database.db import get_db
 from api.models.user import Community, Post, User, Comment
 from api.schemas.user import CreateCommunity, CommunityResponse, PostResponse, CreatePost, CreateComment, CommentResponse
@@ -110,3 +111,10 @@ def get_community_post_comments(community_id: int, post_id: int, db: Session = D
 
     comments = db.query(Comment).filter(Comment.post_id == post_id).all()
     return comments
+
+@community_router.get("/all/search", response_model=List[CommunityResponse])
+def search_communities(name: str = Query(..., min_length=1), db: Session = Depends(get_db)):
+    communities = db.query(Community).filter(func.lower(Community.name).contains(func.lower(name))).all()
+    if not communities:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No communities found")
+    return communities

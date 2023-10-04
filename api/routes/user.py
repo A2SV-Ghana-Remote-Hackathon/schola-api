@@ -1,7 +1,9 @@
-from fastapi import status, HTTPException, Depends, APIRouter
+from typing import List
+from fastapi import status, HTTPException, Depends, APIRouter, Query
 from api.schemas.user import SignUp, Profile
 from database.db import get_db
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from utils.utils import hash_password
 from api.models.user import User
 from utils.oauth2 import get_current_user
@@ -41,3 +43,10 @@ def me(current_user: User = Depends(get_current_user), db: Session = Depends(get
     if not current_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
     return current_user
+
+@user_router.get("/all/search", status_code=status.HTTP_200_OK, response_model=List[Profile])
+def search_user(username: str = Query(..., min_length=1), db: Session = Depends(get_db)):
+    users = db.query(User).filter(func.lower(User.username).contains(func.lower(username))).all()
+    if not users:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No users found")
+    return users
