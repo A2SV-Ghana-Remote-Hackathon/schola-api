@@ -1,12 +1,13 @@
 from datetime import datetime
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Form, UploadFile, File
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from database.db import get_db
 from api.models.user import Community, Post, User, Comment
 from api.schemas.user import CreateCommunity, CommunityResponse, PostResponse, CreatePost, CreateComment, CommentResponse
 from utils.oauth2 import get_current_user
+from utils.s3 import upload_file_to_s3
 
 community_router = APIRouter(prefix="/communities", tags=["Communities"])
 
@@ -61,7 +62,7 @@ def is_user_member_of_community(community: Community, user: User) -> bool:
     return user in community.members
 
 @community_router.post("/{community_id}/posts", response_model=PostResponse, status_code=status.HTTP_201_CREATED)
-def create_community_post(community_id: int, post: CreatePost, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+def create_community_post(community_id: int, content: str = Form(...), file: UploadFile = File(None), current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     community = db.query(Community).filter(Community.id == community_id).first()
     if not community:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Community not found")
@@ -69,7 +70,12 @@ def create_community_post(community_id: int, post: CreatePost, current_user: Use
     if not is_user_member_of_community(community, current_user):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User is not a member of this community")
 
-    new_post = Post(content=post.content, post_image=post.post_image, created_at=datetime.now(), owner=current_user, community_id=community_id)
+    if file:
+        image_url = upload_file_to_s3(file)
+    else:
+        image_url = None
+
+    new_post = Post(content=content, post_image=image_url, created_at=datetime.now(), owner=current_user, community_id=community_id)
     db.add(new_post)
     db.commit()
     db.refresh(new_post)

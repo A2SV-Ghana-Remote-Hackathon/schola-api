@@ -1,17 +1,38 @@
 from datetime import datetime
-from typing import List
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException, Response, status, Form, UploadFile, File
 from sqlalchemy.orm import Session
 from api.models.user import Event, User, Comment
 from api.schemas.user import CreateEvent, EventResponse, CreateComment, CommentResponse
 from database.db import get_db
 from utils.oauth2 import get_current_user
+from utils.s3 import upload_file_to_s3
 
 
 event_router = APIRouter(prefix="/events", tags=["Events"])
 
 @event_router.post("/", status_code=status.HTTP_201_CREATED, response_model=EventResponse)
-def create_event(event_data: CreateEvent, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def create_event(
+    title: str = Form(...),
+    description: str = Form(...),
+    event_date: str = Form(...),
+    location: str = Form(...),
+    image: UploadFile = File(None),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    image_url = None
+    if image:
+        image_url = upload_file_to_s3(image)
+
+    event_data = CreateEvent(
+        title=title,
+        description=description,
+        event_date=event_date,
+        location=location,
+        image=image_url
+    )
+
     new_event = Event(**event_data.dict())
     db.add(new_event)
     db.commit()
@@ -23,7 +44,8 @@ def create_event(event_data: CreateEvent, db: Session = Depends(get_db), current
         description=new_event.description,
         event_date=new_event.event_date,
         location=new_event.location,
-        image=new_event.image
+        image=new_event.image,
+        comments=[]
     )
 
     return response_event
